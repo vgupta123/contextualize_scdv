@@ -1,9 +1,26 @@
 import pickle 
+import pandas as pd 
+from sklearn.utils import shuffle
+from gensim.models import Word2Vec, FastText
+import pandas as pd
+import time
+import numpy as np
+import sys
+import joblib
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report
+from sklearn.mixture import GaussianMixture
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score
+import re
+from nltk.corpus import stopwords
 
-with open("/content/df_contextualized.pkl", 'rb') as f:
+
+with open("df_contextualized.pkl", 'rb') as f:
     df = pickle.load(f)
 
-with open('/content/word_cluster_map.pkl', 'rb') as f:
+with open('word_cluster_map.pkl', 'rb') as f:
     word_cluster = pickle.load(f)
 
 embedding = []
@@ -22,40 +39,23 @@ for keys in word_cluster:
       model[keys+'$'+str(i)]=word_cluster[keys][i]
 
  
- with open('/content/key.pkl', 'wb') as f:
+ with open('key.pkl', 'wb') as f:
   pickle.dump(key, f)
 
-with open('/content/embed.pkl', 'wb') as f:
+with open('embed.pkl', 'wb') as f:
   pickle.dump(embedding, f)
 
-import pandas as pd
-from sklearn.utils import shuffle
+
 df = shuffle(df)
 df = df.reset_index(drop=True)
-df_train = df.truncate(before=0,after=5600)
-df_test = df.truncate(before=5600)
+df_train = df.truncate(before=0,after=0.7*(len(df)))
+df_test = df.truncate(before=0.7*(len(df)))
 
-df.to_csv("/content/all_v2.tsv",sep='\t')
-df_train.to_csv("/content/train_v2.tsv",sep='\t')
-df_test.to_csv("/content/test_v2.tsv",sep='\t')
-
-
-from gensim.models import Word2Vec, FastText
-import pandas as pd
-import time
-import numpy as np
-import sys
-import joblib
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
-from sklearn.metrics import classification_report
-from sklearn.mixture import GaussianMixture
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score
+df.to_csv("all_v2.tsv",sep='\t')
+df_train.to_csv("train_v2.tsv",sep='\t')
+df_test.to_csv("test_v2.tsv",sep='\t')
 
 
-import re
-from nltk.corpus import stopwords
 def review_to_wordlist(review, remove_stopwords=False):
         # Function to convert a document to a sequence of words,
         # optionally removing stop words.  Returns a list of words.
@@ -78,9 +78,6 @@ def drange(start, stop, step):
 
 def cluster_GMM(num_clusters, word_vectors):
 
-    #idx = joblib.load("/content/P-SIF/other_datasets/classic/gmm_latestclusmodel_len2alldata.pkl")
-    #idx_proba = joblib.load("/content/P-SIF/other_datasets/classic/gmm_prob_latestclusmodel_len2alldata.pkl")
-    #return (idx,idx_proba)
     # Initalize a GMM object and use it for clustering.
     clf = GaussianMixture(n_components=num_clusters,
                           covariance_type="full", init_params='kmeans', max_iter=90,verbose=3)
@@ -177,15 +174,15 @@ if __name__ == '__main__':
         context) + "context_len2alldata"
 
     # Load train data.
-    train = pd.read_csv('/content/train_v2.tsv', header=0, delimiter="\t")
+    train = pd.read_csv('train_v2.tsv', header=0, delimiter="\t")
     # Load test data.
-    test = pd.read_csv('/content/test_v2.tsv', header=0, delimiter="\t")
-    all = pd.read_csv('/content/all_v2.tsv', header=0, delimiter="\t")
+    test = pd.read_csv('test_v2.tsv', header=0, delimiter="\t")
+    all = pd.read_csv('all_v2.tsv', header=0, delimiter="\t")
 
     import pickle 
-    with open('/content/key.pkl', 'rb') as f:
+    with open('key.pkl', 'rb') as f:
       index2word = pickle.load(f)
-    with open('/content/embed.pkl', 'rb') as f:
+    with open('embed.pkl', 'rb') as f:
       word_vectors = pickle.load(f)
     
     num_clusters = 30
@@ -196,16 +193,6 @@ if __name__ == '__main__':
     
     for i in range(0, len(all["news"])):
         traindata.append(" ".join(review_to_wordlist(all["news"][i], True)))
-    '''
-        if all['1'][i]=='dvd':
-          all['1'][i]=0
-        elif all['1'][i]=='books':
-          all['1'][i]=1
-        elif all['1'][i]=='electronics':
-          all['1'][i]=2
-        else:
-          all['1'][i]=3
-    '''
 
     tfv = TfidfVectorizer(strip_accents='unicode', dtype=np.float32)
     tfidfmatrix_traindata = tfv.fit_transform(traindata)
@@ -239,18 +226,9 @@ if __name__ == '__main__':
 
     word_idf_dict = {}
 
-    '''
-    for pair in zip(featurenames, idf):
-        word_idf_dict[pair[0]] = pair[1]
-    '''
-
     word_idf_dict = calculate_inv_doc_freq(all,calculate_df_doc_freq(all))
 
     print("Creating word-idf dictionary for Training set...")
-
-    #word_idf_dict = {}
-    #for pair in zip(featurenames, idf):
-    #    word_idf_dict[pair[0]] = pair[1]
 
     prob_wordvecs = get_probability_word_vectors(featurenames, word_centroid_map, num_clusters, word_idf_dict)
 
@@ -308,23 +286,28 @@ if __name__ == '__main__':
     endtime = time.time() - start
     print("SDV created and dumped: ", endtime, "seconds.")
     print("Fitting a SVM classifier on labeled training data...")
-
-    param_grid = [{'C': np.arange(5, 8, 1)}]
-    scores = ['accuracy']  # , 'accuracy', 'recall', 'f1']
+    
+    
+    param_grid = [
+        {'C': np.arange(5.25,5.5,0.25)}]
+    scores = ['accuracy', 'recall_micro', 'f1_micro', 'precision_micro', 'recall_macro', 'f1_macro', 'precision_macro',
+              'recall_weighted', 'f1_weighted', 'precision_weighted']  # , 'accuracy', 'recall', 'f1']
     for score in scores:
         strt = time.time()
         print("# Tuning hyper-parameters for", score, "\n")
-        clf = LinearSVC(C=2)
+        clf = GridSearchCV(LinearSVC(C=1), param_grid, cv=2, scoring='%s' % score,verbose=3)
         clf.fit(gwbowv, train["class"])
         print("Best parameters set found on development set:\n")
-        #print(clf.best_params_)
-        #print(clf.best_score_)
-        Y_true, Y_pred = test["class"], clf.predict(gwbowv_test)
+        print(clf.best_params_)
         print("Best value for ", score, ":\n")
-        print(accuracy_score(Y_true, Y_pred))
+        file1 = open("report.txt","w+")
+        file1.write("Best value for ", score, ":\n"+ str(clf.best_score_)+"para"+str(clf.best_params_))
+        print(clf.best_score_)
+        Y_true, Y_pred = test["class"], clf.predict(gwbowv_test)
         print("Report")
         print(classification_report(Y_true, Y_pred, digits=6))
-        print("Accuracy: ", clf.score(gwbowv_test, test["news"]))
+        print("Accuracy: ", clf.score(gwbowv_test, test["class"]))
+        file1.write("TEST ACCURACY"+str(clf.score(gwbowv_test, test["class"])))
         print("Time taken:", time.time() - strt, "\n")
     endtime = time.time()
     print("Total time taken: ", endtime - start, "seconds.")
