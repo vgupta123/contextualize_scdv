@@ -1,4 +1,4 @@
-# Text Classification with Sparse Composite Document Vectors (SCDV)
+# Unsupervised Contextualized Document Representation
 
 
 ## Introduction
