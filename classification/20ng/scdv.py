@@ -53,8 +53,8 @@ with open('embed.pkl', 'wb') as f:
 
 df = shuffle(df)
 df = df.reset_index(drop=True)
-df_train = df.truncate(before=0,after=0.7*(len(df)))
-df_test = df.truncate(before=0.7*(len(df)))
+df_train = df.truncate(before=0,after=11314)
+df_test = df.truncate(before=11314)
 
 df.to_csv("all_v2.tsv",sep='\t')
 df_train.to_csv("train_v2.tsv",sep='\t')
