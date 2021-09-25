@@ -4,7 +4,7 @@ Data Preprocessing
 ```sh
 $ python preprocess.py 
 ```
-Get word vectors for all words in vocabulary through Word2Vec:
+Corpus contextualization: Get word vectors for all words in vocabulary & WSD:
 ```sh
 $ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
 ```
