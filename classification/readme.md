@@ -14,7 +14,8 @@ $ python SCDV.py
 ```
 
 #### Other
-replace other with "amazon"/"twitter"/"bbcsport"/"recipel"/"classic"
+Replace other with "amazon"/"twitter"/"bbcsport"/"recipel"/"classic"
+
 Change directory:
 
 ```sh
