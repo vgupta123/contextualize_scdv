@@ -3,9 +3,8 @@
 
 ## Introduction
   - For text classification and information retrieval tasks, text data has to be represented as a fixed dimension vector. 
-  - We propose simple feature construction technique named [**SCDV: Sparse Composite Document Vectors using soft clustering over distributional representations.**](https://www.aclweb.org/anthology/D17-1069.pdf) presented at EMNLP 2017.
-  - We demonstrate our method through experiments on multi-class classification on 20newsgroup dataset and multi-label text classification on Reuters-21578 dataset. 
-
+  - We propose simple feature construction technique named [**Unsupervised Contextualized Document Representation**](https://arxiv.org/pdf/2109.10509.pdf) presented at SustaiNLP 2021.
+  - We demonstrate our method through experiments on multi-class classification ( Fully Supervised and Semi-Supervised Setthing ), Similarity Tasks & Concept Matching Tasks. 
 ## Citation
 If you find SCDV useful in your research, please consider citing:
 ```
