@@ -1,3 +1,8 @@
+###########################################
+# Major portion of this script has been taken from https://github.com/dheeraj7596/SCDV
+# Contains the main logic for SCDV
+###########################################
+
 import pickle 
 import pandas as pd 
 from sklearn.utils import shuffle
