@@ -2,7 +2,7 @@
 Change directory to 20news for experimenting on 20Newsgroup dataset and create train and test tsv files as follows:
 ```sh
 $ cd 20news
-$ python create_tsv.py
+$ python create_data.py
 ```
 Get word vectors for all words in vocabulary through Word2Vec:
 ```sh
