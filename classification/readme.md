@@ -1,31 +1,3 @@
-# Text Classification with Sparse Composite Document Vectors (SCDV)
-
-
-## Introduction
-  - For text classification and information retrieval tasks, text data has to be represented as a fixed dimension vector. 
-  - We propose simple feature construction technique named [**SCDV: Sparse Composite Document Vectors using soft clustering over distributional representations.**](https://www.aclweb.org/anthology/D17-1069.pdf) presented at EMNLP 2017.
-  - We demonstrate our method through experiments on multi-class classification on 20newsgroup dataset and multi-label text classification on Reuters-21578 dataset. 
-
-## Citation
-If you find SCDV useful in your research, please consider citing:
-```
-@inproceedings{mekala2017scdv,
-  title={SCDV: Sparse Composite Document Vectors using soft clustering over distributional representations},
-  author={Mekala, Dheeraj and Gupta, Vivek and Paranjape, Bhargavi and Karnick, Harish},
-  booktitle={Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing},
-  pages={659--669},
-  year={2017}
-}
-```
-
-## New Features
-
-- **Python 3.7** As Python2 is deprecated, whole repository is moved to Python3.7.
-- **Support FastText.** The word vectors can be trained through Word2Vec or FastText.
-
-## Testing
-There are 2 folders named 20news and Reuters which contains code related to multi-class classification on 20Newsgroup dataset and multi-label classification on Reuters dataset.
-
 #### 20Newsgroup
 Change directory to 20news for experimenting on 20Newsgroup dataset and create train and test tsv files as follows:
 ```sh
@@ -111,17 +83,3 @@ $ python SCDV.py 300 100 sjm model_type
 # Change the code to store these scores in a format that can be used by the IR system.
 ```
 Use these scores to interpolate with the language model scores with interpolation parameter 0.5.
-
-
-## Requirements
-Minimum requirements:
-  -  Python 3.7
-  -  NumPy 1.17.2
-  -  Scikit-learn 0.23.1
-  -  Pandas 0.25.1
-  -  Gensim 3.8.1
-  -  sgmllib3k
-
-For theory and explanation of SCDV, please visit our [EMNLP 2017 paper](https://www.aclweb.org/anthology/D17-1069.pdf), [BLOG](https://dheeraj7596.github.io/SDV/).
-
-Note: You need not download 20Newsgroup or Reuters-21578 dataset. All datasets are present in their respective directories. We used SGMl parser for parsing Reuters-21578 dataset from [here](https://gist.github.com/herrfz/7967781)
