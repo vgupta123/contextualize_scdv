@@ -32,4 +32,4 @@ Minimum requirements:
   -  sgmllib3k
   -  flair 0.9
 
-For theory and explanation of SCDV, please visit our [SustaiNLP paper](https://www.aclweb.org/anthology/D17-1069.pdf)
+For theory and explanation of this work, please visit our [SustaiNLP paper](https://arxiv.org/pdf/2109.10509.pdf)
