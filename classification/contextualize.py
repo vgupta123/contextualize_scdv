@@ -1,5 +1,6 @@
 ##############################################
-Major part of this code has been taken from https://github.com/dheeraj7596/ConWea
+# Major part of this code has been taken from https://github.com/dheeraj7596/ConWea
+# Given a text corpus, this script contextualize the corpus by creating work emedding vectors and Work Sense Disambiguation. More specification are available in the manuscript
 ##############################################
 
 import argparse
