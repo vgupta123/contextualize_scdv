@@ -30,3 +30,5 @@ Get Sparse Document Vectors (SCDV) for documents in train and test set and accur
 ```sh
 $ python SCDV.py
 ```
+
+Note: For semi-supervised experiments, you can reduce train data in the scdv.py file before final classifier training
