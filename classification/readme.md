@@ -6,80 +6,78 @@ $ python create_tsv.py
 ```
 Get word vectors for all words in vocabulary through Word2Vec:
 ```sh
-$ python Word2Vec.py 200
-# Word2Vec.py takes word vector dimension as an argument. We took it as 200.
-```
-Get word vectors for all words in vocabulary through FastText:
-```sh
-$ python FastText.py 200
-# FastText.py takes word vector dimension as an argument. We took it as 200.
+$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
 ```
 Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
 ```sh
-$ python SCDV.py 200 60 model_type
-# SCDV.py takes word vector dimension, number of clusters as arguments and model_type as arguments. Here model_type refers to the word vectors trained model types and hence it is one of "word2vec" or "fasttext". We took word vector dimension as 200 and number of clusters as 60.
+$ python SCDV.py
 ```
-Get Topic coherence for documents in train set:
+
+#### Other
+Change directory to Amazon:
 ```sh
-$ python TopicCoherence.py 200 60 10 model_type
-# TopicCoherence.py takes word vector dimension, number of clusters, number of top words and model_type as arguments. Here model_type refers to the word vectors trained model types and hence it is one of "word2vec" or "fasttext". We took word vector dimension as 200, number of clusters as 60 and number of top words as 10.
-```
-#### Reuters
-Change directory to Reuters for experimenting on Reuters-21578 dataset. As reuters data is in SGML format, parsing data and creating pickle file of parsed data can be done as follows:
-```sh
-$ python create_data.py
-# We don't save train and test files locally. We split data into train and test whenever needed.
+$ cd amazon
+$ python preprocess.py
 ```
 Get word vectors for all words in vocabulary through Word2Vec:
 ```sh
-$ python Word2Vec.py 200
-# Word2Vec.py takes word vector dimension as an argument. We took it as 200.
-```
-Get word vectors for all words in vocabulary through FastText:
-```sh
-$ python FastText.py 200
-# FastText.py takes word vector dimension as an argument. We took it as 200.
+$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
 ```
 Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
 ```sh
-$ python SCDV.py 200 60 model_type
-# SCDV.py takes word vector dimension, number of clusters as arguments and model_type as arguments. Here model_type refers to the word vectors trained model types and hence it is one of "word2vec" or "fasttext". We took word vector dimension as 200 and number of clusters as 60.
+$ python SCDV.py
 ```
-Get performance metrics on test set:
+
+#### Other
+Change directory to Amazon:
 ```sh
-$ python metrics.py 200 60
-# metrics.py takes word vector dimension and number of clusters as arguments. We took word vector dimension as 200 and number of clusters as 60.
+$ cd amazon
+$ python preprocess.py
 ```
-
-#### Information Retrieval
-Change directory to IR for experimenting on information Retrieval task. IR Datasets mentioned in the paper can be downloaded from [TREC website](http://trec.nist.gov/data/docs_eng.html). 
-
-You will need to run the documents and queries through a full fledged IR pipeline system like Apache Lucene or [Project Lemur](https://www.lemurproject.org/) in order to 
-  - Tokenize the data, remove stop words and pass tokens through a Porter Stemmer.
-  - Build inverted and forward index.
-  - Build a basic language model retrieval system with Dirichlet smoothing.
-
-Data Format
-  - The IR Data folder must have a file called "queries.txt" and a folder called *raw* that has all the documents.
-  - Each file in *raw* should be a single document containing space separated processed tokens. File must be named as doc_ID.txt.
-  - Each line in queries.txt should be a single query containing space separated processed words.
-
-To interpolate language model retrieval system with the query-document score obtained from SCDV:
-
-Get word vectors for all terms in vocabulary through Word2Vec:
+Get word vectors for all words in vocabulary through Word2Vec:
 ```sh
-$ python Word2Vec.py 300 sjm
-# Word2Vec.py takes word vector dimension and folder containing IR dataset as arguments. We took 300 and sjm (San Jose Mercury).
+$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
 ```
-Get word vectors for all terms in vocabulary through FastText:
+Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
 ```sh
-$ python FastText.py 300 sjm
-# FastText.py takes word vector dimension and folder containing IR dataset as arguments. We took 300 and sjm (San Jose Mercury).
-```
-Create Sparse Document Vectors (SCDV) for all documents and queries and compute similarity scores for all query-document pairs.
+$ python SCDV.py
+```#### Other
+Change directory to Amazon:
 ```sh
-$ python SCDV.py 300 100 sjm model_type
-# SCDV.py takes word vector dimension, number of clusters, folder containing IR dataset, and model_type as arguments. Here model_type refers to the word vectors trained model types and hence it is one of "word2vec" or "fasttext". We took word vector dimension as 300, number of clusters as 100, and folder as sjm.
-# Change the code to store these scores in a format that can be used by the IR system.
+$ cd amazon
+$ python preprocess.py
 ```
-Use these scores to interpolate with the language model scores with interpolation parameter 0.5.
+Get word vectors for all words in vocabulary through Word2Vec:
+```sh
+$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
+```
+Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
+```sh
+$ python SCDV.py
+```#### Other
+Change directory to Amazon:
+```sh
+$ cd amazon
+$ python preprocess.py
+```
+Get word vectors for all words in vocabulary through Word2Vec:
+```sh
+$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
+```
+Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
+```sh
+$ python SCDV.py
+```#### Other
+Change directory to Amazon:
+```sh
+$ cd amazon
+$ python preprocess.py
+```
+Get word vectors for all words in vocabulary through Word2Vec:
+```sh
+$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
+```
+Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
+```sh
+$ python SCDV.py
+```
