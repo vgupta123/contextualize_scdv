@@ -18,6 +18,7 @@ from sklearn.metrics import classification_report
 from sklearn.mixture import GaussianMixture
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
+from sklearn.metrics.pairwise import cosine_similarity
 import re
 from nltk.corpus import stopwords
 
@@ -37,7 +38,6 @@ for keys in word_cluster:
     embedding.append(word_cluster[keys][0])
     model[keys]=word_cluster[keys][0]
   else:
-    print("##############")
     for i in range(len(word_cluster[keys])):
       key.append(keys+'$'+str(i))
       embedding.append(word_cluster[keys][i])
@@ -53,8 +53,8 @@ with open('embed.pkl', 'wb') as f:
 
 df = shuffle(df)
 df = df.reset_index(drop=True)
-df_train = df.truncate(before=0,after=0.7*(len(df)))
-df_test = df.truncate(before=0.7*(len(df)))
+df_train = df.truncate(before=7249)
+df_test = df.truncate(before=7249)
 
 df.to_csv("all_v2.tsv",sep='\t')
 df_train.to_csv("train_v2.tsv",sep='\t')
@@ -240,81 +240,39 @@ if __name__ == '__main__':
     temp_time = time.time() - start
     print("Creating Document Vectors...:", temp_time, "seconds.")
 
-    gwbowv = np.zeros((train["news"].size, num_clusters * (num_features)), dtype="float32")
+    gwbowv = np.zeros((test["news"].size, num_clusters * (num_features)), dtype="float32")
 
     counter = 0
 
     min_no = 0
     max_no = 0
-    for review in train["news"]:
+    
+    for review in test["news"]:
         words = review_to_wordlist(review, \
                                                          remove_stopwords=True)
         gwbowv[counter] = create_cluster_vector_and_gwbowv(prob_wordvecs, words, word_centroid_map,
                                                            word_centroid_prob_map, num_features, word_idf_dict,
                                                            featurenames, num_clusters, train=True)
         counter += 1
-        if counter % 100 == 0:
-            print("Train News Covered : ", counter)
 
-    gwbowv_name = "SDV_" + str(num_clusters) + "cluster_" + str(num_features) + "feature_matrix_gmm_sparse.npy"
-
-    gwbowv_test = np.zeros((test["news"].size, num_clusters * (num_features)), dtype="float32")
+    gwbowv_test = np.zeros((test["class"].size, num_clusters * (num_features)), dtype="float32")
 
     counter = 0
+    sim = []
 
-    for review in test["news"]:
+    for review in test["class"]:
         words = review_to_wordlist(review, \
                                                          remove_stopwords=True)
         gwbowv_test[counter] = create_cluster_vector_and_gwbowv(prob_wordvecs, words, word_centroid_map,
                                                                 word_centroid_prob_map, num_features, word_idf_dict,
                                                                 featurenames, num_clusters)
+        sim.append(cosine_similarity(gwbowv_test[counter], gwbowv[counter])*5)
         counter += 1
-        if counter % 100 == 0:
-            print("Test News Covered : ", counter)
-
-    test_gwbowv_name = "TEST_SDV_" + str(num_clusters) + "cluster_" + str(
-        num_features) + "feature_matrix_gmm_sparse.npy"
-
-    print("Making sparse...")
-    # Set the threshold percentage for making it sparse. 
-    percentage = 0.04
-    min_no = min_no * 1.0 / len(train["news"])
-    max_no = max_no * 1.0 / len(train["news"])
-    print("Average min: ", min_no)
-    print("Average max: ", max_no)
-    thres = (abs(max_no) + abs(min_no)) / 2
-    thres = thres * percentage
-
-    np.save(gwbowv_name, gwbowv)
-    np.save(test_gwbowv_name, gwbowv_test)
-
-    endtime = time.time() - start
-    print("SDV created and dumped: ", endtime, "seconds.")
-    print("Fitting a SVM classifier on labeled training data...")
+    
+    test['label'] = sim 
+    test.to_csv("final_test_result.csv")
     
     
-    param_grid = [
-        {'C': np.arange(5.25,5.5,0.25)}]
-    scores = ['accuracy', 'recall_micro', 'f1_micro', 'precision_micro', 'recall_macro', 'f1_macro', 'precision_macro',
-              'recall_weighted', 'f1_weighted', 'precision_weighted']  # , 'accuracy', 'recall', 'f1']
-    for score in scores:
-        strt = time.time()
-        print("# Tuning hyper-parameters for", score, "\n")
-        clf = GridSearchCV(LinearSVC(C=1), param_grid, cv=2, scoring='%s' % score,verbose=3)
-        clf.fit(gwbowv, train["class"])
-        print("Best parameters set found on development set:\n")
-        print(clf.best_params_)
-        print("Best value for ", score, ":\n")
-        file1 = open("report.txt","w+")
-        file1.write("Best value for ", score, ":\n"+ str(clf.best_score_)+"para"+str(clf.best_params_))
-        print(clf.best_score_)
-        Y_true, Y_pred = test["class"], clf.predict(gwbowv_test)
-        print("Report")
-        print(classification_report(Y_true, Y_pred, digits=6))
-        print("Accuracy: ", clf.score(gwbowv_test, test["class"]))
-        file1.write("TEST ACCURACY"+str(clf.score(gwbowv_test, test["class"])))
-        print("Time taken:", time.time() - strt, "\n")
-    endtime = time.time()
-    print("Total time taken: ", endtime - start, "seconds.")
-
-    print("********************************************************")
+    #######################################################################
+    
+    
