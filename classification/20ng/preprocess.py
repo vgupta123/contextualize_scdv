@@ -2,25 +2,50 @@
 #This script reads data and convert it to a code redable format to be used in next steps
 #########################################
 
-import pandas as pd
-from sklearn.model_selection import train_test_split
-import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
+from sklearn.datasets import fetch_20newsgroups
+from pandas import DataFrame
+import unicodedata
 
-df = pd.read_pickle("data_all.pkl")
+newsgroups_train = fetch_20newsgroups(subset='train')
+newsgroups_test = fetch_20newsgroups(subset='test')
 
-X = []
-Y = []
-for x in df:
-  X.append(x[0])
-  Y.append(x[1])
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=42,stratify=Y)
+rows_train = []
+rows_test = []
+rows_all = []
 
-df_amazon = pd.DataFrame(list(zip(X,Y)),columns=['news','class'])
-df_train = pd.DataFrame(list(zip(X_train,Y_train)),columns=['news','class'])
-df_test = pd.DataFrame(list(zip(X_test,Y_test)),columns=['news','class'])
+# Path for saving all tsv files.
+path_train = 'data/train_v2.tsv'
+path_test = 'data/test_v2.tsv'
+path_all = 'data/all_v2.tsv'
 
-df_amazon.to_csv("df.tsv",sep='\t')
-df_train.to_csv("df_train.tsv",sep='\t')
-df_test.to_csv("df_test.tsv",sep='\t')
+data_train = DataFrame({'news': [], 'class': []})
+data_test = DataFrame({'news': [], 'class': []})
+data_all = DataFrame({'news': []})
+
+for i in range(0, len(newsgroups_train.data)):
+    target = newsgroups_train.target[i]
+    # Convert into unicode
+    newsgroups_train.data[i] = str(newsgroups_train.data[i])
+    # Remove characters which can't be converted into ascii.
+    newsgroups_train.data[i] = str(unicodedata.normalize('NFKD', newsgroups_train.data[i]).encode('ascii', 'ignore'))
+    for character in ["\n", "|", ">", "<", "-", "+", "^", "[", "]", "#", "\t", "\r", "`"]:
+        newsgroups_train.data[i] = newsgroups_train.data[i].replace(character, " ")
+
+    rows_train.append({'news': newsgroups_train.data[i], 'class': target})
+    rows_all.append({'news': newsgroups_train.data[i]})
+
+for i in range(0, len(newsgroups_test.data)):
+    target = newsgroups_test.target[i]
+    # Convert into unicode
+    newsgroups_test.data[i] = str(newsgroups_test.data[i])
+    # Remove characters which can't be converted into ascii.
+    newsgroups_test.data[i] = str(unicodedata.normalize('NFKD', newsgroups_test.data[i]).encode('ascii', 'ignore'))
+    for character in ["\n", "|", ">", "<", "-", "+", "^", "[", "]", "#", "\t", "\r", "`"]:
+        newsgroups_test.data[i] = newsgroups_test.data[i].replace(character, " ")
+
+    rows_test.append({'news': newsgroups_test.data[i], 'class': target})
+    rows_all.append({'news': newsgroups_test.data[i]})
+
+
+data_all = data_all.append(DataFrame(rows_all))
+data_all.to_pickle("data_all.pkl")
