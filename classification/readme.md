@@ -14,63 +14,11 @@ $ python SCDV.py
 ```
 
 #### Other
-Change directory to Amazon:
-```sh
-$ cd amazon
-$ python preprocess.py
-```
-Get word vectors for all words in vocabulary through Word2Vec:
-```sh
-$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
-```
-Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
-```sh
-$ python SCDV.py
-```
+replace other with "amazon"/"twitter"/"bbcsport"/"recipel"/"classic"
+Change directory:
 
-#### Other
-Change directory to Amazon:
 ```sh
-$ cd amazon
-$ python preprocess.py
-```
-Get word vectors for all words in vocabulary through Word2Vec:
-```sh
-$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
-```
-Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
-```sh
-$ python SCDV.py
-```#### Other
-Change directory to Amazon:
-```sh
-$ cd amazon
-$ python preprocess.py
-```
-Get word vectors for all words in vocabulary through Word2Vec:
-```sh
-$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
-```
-Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
-```sh
-$ python SCDV.py
-```#### Other
-Change directory to Amazon:
-```sh
-$ cd amazon
-$ python preprocess.py
-```
-Get word vectors for all words in vocabulary through Word2Vec:
-```sh
-$ python contextualize.py --dataset_path dataset_path --temp_dir temp_dir --gpu_id 0
-```
-Get Sparse Document Vectors (SCDV) for documents in train and test set and accuracy of prediction on test set:
-```sh
-$ python SCDV.py
-```#### Other
-Change directory to Amazon:
-```sh
-$ cd amazon
+$ cd other 
 $ python preprocess.py
 ```
 Get word vectors for all words in vocabulary through Word2Vec:
