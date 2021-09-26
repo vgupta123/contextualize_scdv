@@ -3,7 +3,7 @@
 
 ## Introduction
   - For text classification and information retrieval tasks, text data has to be represented as a fixed dimension vector. 
-  - We propose simple feature construction technique named [**Unsupervised Contextualized Document Representation**](https://arxiv.org/pdf/2109.10509.pdf) presented at SustaiNLP 2021.
+  - We propose simple feature construction technique named [**Unsupervised Contextualized Document Representation**](https://arxiv.org/pdf/2109.10509.pdf) that peforms Word Sense Disambiguation and usues contextualization power of BERT and SCDV. 
   - We demonstrate our method through experiments on multi-class classification ( Fully Supervised and Semi-Supervised Setthing ), Similarity Tasks & Concept Matching Tasks. 
 ## Citation
 If you find SCDV useful in your research, please consider citing:
